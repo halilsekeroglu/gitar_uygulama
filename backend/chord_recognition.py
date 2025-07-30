@@ -134,6 +134,33 @@ class ChordRecognitionEngine:
             {'name': 'Dm6', 'notes': ['D', 'F', 'A', 'B'], 'type': 'Minor 6th', 'structure': 'Root + Minor 3rd + Perfect 5th + Major 6th', 'category': 'sixth'},
             {'name': 'Em6', 'notes': ['E', 'G', 'B', 'C#'], 'type': 'Minor 6th', 'structure': 'Root + Minor 3rd + Perfect 5th + Major 6th', 'category': 'sixth'},
             {'name': 'Fm6', 'notes': ['F', 'G#', 'C', 'D'], 'type': 'Minor 6th', 'structure': 'Root + Minor 3rd + Perfect 5th + Major 6th', 'category': 'sixth'},
+
+            # 9th Chords (Major)
+            {'name': 'C9', 'notes': ['C', 'E', 'G', 'A#', 'D'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'D9', 'notes': ['D', 'F#', 'A', 'C', 'E'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'E9', 'notes': ['E', 'G#', 'B', 'D', 'F#'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'F9', 'notes': ['F', 'A', 'C', 'D#', 'G'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'G9', 'notes': ['G', 'B', 'D', 'F', 'A'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'A9', 'notes': ['A', 'C#', 'E', 'G', 'B'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'B9', 'notes': ['B', 'D#', 'F#', 'A', 'C#'], 'type': '9th', 'structure': 'Root + Major 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+
+            # Minor 9th Chords
+            {'name': 'Am9', 'notes': ['A', 'C', 'E', 'G', 'B'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'Bm9', 'notes': ['B', 'D', 'F#', 'A', 'C#'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'Cm9', 'notes': ['C', 'D#', 'G', 'A#', 'D'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'Dm9', 'notes': ['D', 'F', 'A', 'C', 'E'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'Em9', 'notes': ['E', 'G', 'B', 'D', 'F#'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'Fm9', 'notes': ['F', 'G#', 'C', 'D#', 'G'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+            {'name': 'Gm9', 'notes': ['G', 'A#', 'D', 'F', 'A'], 'type': 'Minor 9th', 'structure': 'Root + Minor 3rd + Perfect 5th + Minor 7th + 9th', 'category': 'ninth'},
+
+            # Major 9th Chords
+            {'name': 'Cmaj9', 'notes': ['C', 'E', 'G', 'B', 'D'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
+            {'name': 'Dmaj9', 'notes': ['D', 'F#', 'A', 'C#', 'E'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
+            {'name': 'Emaj9', 'notes': ['E', 'G#', 'B', 'D#', 'F#'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
+            {'name': 'Fmaj9', 'notes': ['F', 'A', 'C', 'E', 'G'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
+            {'name': 'Gmaj9', 'notes': ['G', 'B', 'D', 'F#', 'A'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
+            {'name': 'Amaj9', 'notes': ['A', 'C#', 'E', 'G#', 'B'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
+            {'name': 'Bmaj9', 'notes': ['B', 'D#', 'F#', 'A#', 'C#'], 'type': 'Major 9th', 'structure': 'Root + Major 3rd + Perfect 5th + Major 7th + 9th', 'category': 'ninth'},
         ]
 
     def normalize_note(self, note: str) -> str:
