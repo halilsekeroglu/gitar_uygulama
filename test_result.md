@@ -178,6 +178,101 @@ backend:
         - comment: "Error handling working well overall. Invalid notes in play-note return proper error status, invalid notes in note-info return 404, non-existent endpoints return 404. CORS middleware and exception handling properly configured."
 
 frontend:
+  - task: "Initial App Loading"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test app loading, title display, fretboard visibility, string names, fret numbers, and fret markers"
+
+  - task: "Interactive Fret Selection"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test fret clicking, highlighting, note display, deselection, and tooltips"
+
+  - task: "Selected Notes Display"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test selected notes section, unique note badges, and counter display"
+
+  - task: "Chord Recognition Integration"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test chord recognition with various chord combinations, confidence display, and chord structure information"
+
+  - task: "Sound Control"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test sound toggle button functionality, icon changes, and API calls when sound is enabled/disabled"
+
+  - task: "Clear Function"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test clear button functionality, selection reset, and UI state updates"
+
+  - task: "API Integration"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test network requests to /api/recognize-chord and /api/play-note endpoints, and error handling"
+
+  - task: "Responsive Design"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/Fretboard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Need to test responsive design, guitar-themed colors, and layout on different viewport sizes"
 
 metadata:
   created_by: "testing_agent"
