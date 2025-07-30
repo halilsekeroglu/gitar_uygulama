@@ -32,14 +32,21 @@ const Fretboard = () => {
     return noteNames[noteIndex];
   };
 
-  const handleFretClick = (stringIndex, fret) => {
+  const handleFretClick = async (stringIndex, fret) => {
     const note = getNoteAtFret(stringIndex, fret);
     const noteId = `${stringIndex}-${fret}`;
     
-    // Play sound if enabled (mock)
+    // Play sound if enabled
     if (soundEnabled) {
-      console.log(`Playing note: ${note}`);
-      // Mock MIDI sound - will be replaced with actual implementation
+      try {
+        await axios.post(`${API}/play-note`, {
+          note: note,
+          octave: 4,
+          duration: 500
+        });
+      } catch (error) {
+        console.error('Error playing note:', error);
+      }
     }
 
     setSelectedNotes(prev => {
