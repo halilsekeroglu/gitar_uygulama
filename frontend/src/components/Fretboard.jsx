@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import mockData from '../mock/mockData';
+import { toast } from '../hooks/use-toast';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const Fretboard = () => {
   const [selectedNotes, setSelectedNotes] = useState([]);
