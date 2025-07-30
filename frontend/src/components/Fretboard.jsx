@@ -68,15 +68,32 @@ const Fretboard = () => {
     setRecognizedChords([]);
   };
 
-  // Chord recognition with mock data
+  // Chord recognition with real API
   useEffect(() => {
-    if (selectedNotes.length >= 2) {
-      const notesList = selectedNotes.map(n => n.note);
-      const chords = mockData.recognizeChords(notesList);
-      setRecognizedChords(chords);
-    } else {
-      setRecognizedChords([]);
-    }
+    const recognizeChords = async () => {
+      if (selectedNotes.length >= 2) {
+        try {
+          const notesList = selectedNotes.map(n => n.note);
+          const response = await axios.post(`${API}/recognize-chord`, {
+            notes: notesList,
+            selected_positions: selectedNotes
+          });
+          setRecognizedChords(response.data.recognized_chords);
+        } catch (error) {
+          console.error('Error recognizing chords:', error);
+          toast({
+            title: "Hata",
+            description: "Akor tanıma sırasında bir hata oluştu",
+            variant: "destructive",
+          });
+          setRecognizedChords([]);
+        }
+      } else {
+        setRecognizedChords([]);
+      }
+    };
+
+    recognizeChords();
   }, [selectedNotes]);
 
   const getFretMarkers = (fret) => {
