@@ -562,6 +562,8 @@ class BackendTester:
         # Run all test suites
         self.test_health_endpoints()
         self.test_chord_recognition()
+        self.test_ninth_chord_recognition()  # New test for 9th chords
+        self.test_extended_chord_partial_matches()  # New test for extended chords
         self.test_chord_recognition_edge_cases()
         self.test_midi_service()
         self.test_note_info_api()
