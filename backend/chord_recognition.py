@@ -177,20 +177,40 @@ class ChordRecognitionEngine:
         unique_chord = list(dict.fromkeys(normalized_chord))
         
         matching_notes = [note for note in unique_input if note in unique_chord]
+        
+        # For exact matches
+        if len(unique_input) == len(unique_chord) and len(matching_notes) == len(unique_chord):
+            return {
+                'matching_notes': len(matching_notes),
+                'percentage': 100,
+                'is_exact_match': True,
+                'extra_notes': 0
+            }
+        
+        # For extended chords, prioritize matches that contain triad + extensions
+        # Check if input contains the basic triad of the chord
+        basic_triad_notes = unique_chord[:3] if len(unique_chord) >= 3 else unique_chord
+        triad_matches = [note for note in unique_input if note in basic_triad_notes]
+        
+        # Calculate match percentage based on input notes vs chord notes
         match_percentage = len(matching_notes) / len(unique_chord) * 100 if unique_chord else 0
         
-        # Bonus for exact match
-        exact_match = len(unique_input) == len(unique_chord) and match_percentage == 100
+        # Special scoring for extended chords (9th, 11th, 13th)
+        if len(unique_chord) > 3:  # Extended chord
+            # Bonus if we have the triad + some extensions
+            if len(triad_matches) == len(basic_triad_notes) and len(matching_notes) >= 4:
+                match_percentage += 10  # Bonus for extended chord recognition
         
-        # Penalty for extra notes
-        extra_notes_penalty = max(0, (len(unique_input) - len(unique_chord)) * 15)
+        # Penalty for extra notes that don't belong to the chord
+        extra_notes = len(unique_input) - len(matching_notes)
+        extra_notes_penalty = max(0, extra_notes * 10)  # Reduced penalty
         final_percentage = max(0, match_percentage - extra_notes_penalty)
         
         return {
             'matching_notes': len(matching_notes),
-            'percentage': 100 if exact_match else int(final_percentage),
-            'is_exact_match': exact_match,
-            'extra_notes': len(unique_input) - len(matching_notes)
+            'percentage': min(100, int(final_percentage)),
+            'is_exact_match': False,
+            'extra_notes': extra_notes
         }
 
     def recognize_chords(self, input_notes: List[str]) -> List[RecognizedChord]:
