@@ -224,8 +224,11 @@ class ChordRecognitionEngine:
         for chord in self.chord_database:
             match = self.calculate_chord_match(unique_notes, chord['notes'])
             
-            # Only include matches with significant confidence
-            if match['matching_notes'] >= 2 and match['percentage'] >= 60:
+            # Improved threshold logic for extended chords
+            min_matching_notes = 3 if len(chord['notes']) >= 4 else 2
+            min_percentage = 50  # Lowered threshold
+            
+            if match['matching_notes'] >= min_matching_notes and match['percentage'] >= min_percentage:
                 recognized_chord = RecognizedChord(
                     name=chord['name'],
                     type=chord['type'],
@@ -237,8 +240,23 @@ class ChordRecognitionEngine:
                 )
                 matches.append(recognized_chord)
         
-        # Sort by confidence, prioritizing exact matches
-        matches.sort(key=lambda x: (-int(x.is_exact_match), -x.confidence))
+        # Enhanced sorting: prioritize by match quality and chord complexity
+        def sort_key(chord):
+            # Exact matches first
+            if chord.is_exact_match:
+                return (0, -chord.confidence, len(chord.notes))
+            
+            # For extended chords, consider how many notes match
+            input_set = set(unique_notes)
+            chord_set = set([self.normalize_note(note) for note in chord.notes])
+            common_notes = len(input_set.intersection(chord_set))
+            
+            # Prioritize chords that use more of the input notes
+            coverage_score = common_notes / len(unique_notes) * 100
+            
+            return (1, -coverage_score, -chord.confidence, len(chord.notes))
+        
+        matches.sort(key=sort_key)
         
         # Return top 6 matches
         return matches[:6]
