@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -12,6 +12,32 @@ const Fretboard = () => {
   const [selectedNotes, setSelectedNotes] = useState([]);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [recognizedChords, setRecognizedChords] = useState([]);
+  const audioCtxRef = useRef(null);
+
+  useEffect(() => {
+    audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    return () => {
+      audioCtxRef.current && audioCtxRef.current.close();
+    };
+  }, []);
+
+  const getFrequency = (note, octave) => {
+    const noteIndex = noteNames.indexOf(note);
+    const midiNumber = (octave + 1) * 12 + noteIndex;
+    return 440 * Math.pow(2, (midiNumber - 69) / 12);
+  };
+
+  const playTone = (frequency, duration = 500) => {
+    if (!audioCtxRef.current) return;
+    const oscillator = audioCtxRef.current.createOscillator();
+    const gainNode = audioCtxRef.current.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = frequency;
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtxRef.current.destination);
+    oscillator.start();
+    oscillator.stop(audioCtxRef.current.currentTime + duration / 1000);
+  };
 
   // Guitar strings in standard tuning (from low E to high E)
   const strings = [
@@ -32,16 +58,25 @@ const Fretboard = () => {
     return noteNames[noteIndex];
   };
 
+  const getNoteInfoAtFret = (stringIndex, fret) => {
+    const string = strings[stringIndex];
+    const noteNumber = string.baseNote + fret;
+    const noteIndex = noteNumber % 12;
+    const octave = string.octave + Math.floor(noteNumber / 12);
+    return { note: noteNames[noteIndex], octave };
+  };
+
   const handleFretClick = async (stringIndex, fret) => {
-    const note = getNoteAtFret(stringIndex, fret);
+    const { note, octave } = getNoteInfoAtFret(stringIndex, fret);
     const noteId = `${stringIndex}-${fret}`;
-    
-    // Play sound if enabled
+
     if (soundEnabled) {
+      const freq = getFrequency(note, octave);
+      playTone(freq, 500);
       try {
         await axios.post(`${API}/play-note`, {
-          note: note,
-          octave: 4,
+          note,
+          octave,
           duration: 500
         });
       } catch (error) {
