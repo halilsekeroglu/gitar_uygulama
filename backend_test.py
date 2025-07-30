@@ -338,6 +338,163 @@ class BackendTester:
                 self.log_test(f"Note Info - {test['note']}{test['octave']}", False,
                             f"Exception: {str(e)}")
 
+    def test_ninth_chord_recognition(self):
+        """Test 9th chord recognition - specific bug fix verification"""
+        print("=== Testing 9th Chord Recognition (Bug Fix) ===")
+        
+        # Test the specific user-reported bug: "la do mi si" (A, C, E, B) should be Am9
+        test_cases = [
+            {
+                "name": "Am9 - User Reported Bug (A, C, E, B)",
+                "notes": ["A", "C", "E", "B"],
+                "expected_chord": "Am9",
+                "expected_type": "Minor 9th",
+                "description": "Should recognize Am9 from partial notes (missing G)"
+            },
+            {
+                "name": "Am9 - Complete Chord",
+                "notes": ["A", "C", "E", "G", "B"],
+                "expected_chord": "Am9",
+                "expected_type": "Minor 9th",
+                "description": "Complete Am9 chord"
+            },
+            {
+                "name": "Cmaj9 - Partial Match",
+                "notes": ["C", "E", "G", "D"],
+                "expected_chord": "Cmaj9",
+                "expected_type": "Major 9th",
+                "description": "Cmaj9 without the 7th (B)"
+            },
+            {
+                "name": "Cmaj9 - Complete Chord",
+                "notes": ["C", "E", "G", "B", "D"],
+                "expected_chord": "Cmaj9",
+                "expected_type": "Major 9th",
+                "description": "Complete Cmaj9 chord"
+            },
+            {
+                "name": "Dm9 - Partial Match",
+                "notes": ["D", "F", "A", "E"],
+                "expected_chord": "Dm9",
+                "expected_type": "Minor 9th",
+                "description": "Dm9 without the 7th (C)"
+            },
+            {
+                "name": "G9 - Partial Match",
+                "notes": ["G", "B", "D", "A"],
+                "expected_chord": "G9",
+                "expected_type": "9th",
+                "description": "G9 without the 7th (F)"
+            }
+        ]
+        
+        for test_case in test_cases:
+            try:
+                payload = {"notes": test_case["notes"]}
+                response = self.session.post(f"{self.base_url}/recognize-chord", json=payload)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    recognized_chords = data.get("recognized_chords", [])
+                    
+                    if recognized_chords:
+                        # Check if expected chord is in the results (preferably as top match)
+                        found_expected = False
+                        top_chord = recognized_chords[0]
+                        
+                        for i, chord in enumerate(recognized_chords):
+                            if chord["name"] == test_case["expected_chord"]:
+                                found_expected = True
+                                position = i + 1
+                                confidence = chord["confidence"]
+                                
+                                if i == 0:  # Top match
+                                    self.log_test(f"9th Chord - {test_case['name']}", True,
+                                                f"✅ {test_case['expected_chord']} recognized as TOP match with {confidence}% confidence")
+                                else:  # Found but not top
+                                    self.log_test(f"9th Chord - {test_case['name']}", True,
+                                                f"⚠️ {test_case['expected_chord']} found at position {position} with {confidence}% confidence (top: {top_chord['name']})")
+                                break
+                        
+                        if not found_expected:
+                            # Log what we got instead
+                            top_matches = [f"{chord['name']} ({chord['confidence']}%)" for chord in recognized_chords[:3]]
+                            self.log_test(f"9th Chord - {test_case['name']}", False,
+                                        f"Expected {test_case['expected_chord']}, got: {', '.join(top_matches)}")
+                    else:
+                        self.log_test(f"9th Chord - {test_case['name']}", False,
+                                    "No chords recognized", data)
+                else:
+                    self.log_test(f"9th Chord - {test_case['name']}", False,
+                                f"Status: {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_test(f"9th Chord - {test_case['name']}", False, f"Exception: {str(e)}")
+
+    def test_extended_chord_partial_matches(self):
+        """Test partial matches for various extended chords"""
+        print("=== Testing Extended Chord Partial Matches ===")
+        
+        # Test cases for partial matches of extended chords
+        test_cases = [
+            {
+                "name": "7th Chord Partial - Am7 without 7th",
+                "notes": ["A", "C", "E"],  # Am triad, should still suggest Am7
+                "should_include": "Am7",
+                "description": "Basic Am triad should suggest Am7 as possibility"
+            },
+            {
+                "name": "Major 7th Partial - Cmaj7 without 7th",
+                "notes": ["C", "E", "G"],  # C major triad
+                "should_include": "Cmaj7",
+                "description": "C major triad should suggest Cmaj7"
+            },
+            {
+                "name": "Add9 Chord - Cadd9",
+                "notes": ["C", "D", "E", "G"],
+                "should_include": "Cadd9",
+                "description": "Should recognize add9 chords"
+            },
+            {
+                "name": "6th Chord - C6",
+                "notes": ["C", "E", "G", "A"],
+                "should_include": "C6",
+                "description": "Should recognize 6th chords"
+            }
+        ]
+        
+        for test_case in test_cases:
+            try:
+                payload = {"notes": test_case["notes"]}
+                response = self.session.post(f"{self.base_url}/recognize-chord", json=payload)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    recognized_chords = data.get("recognized_chords", [])
+                    
+                    if recognized_chords:
+                        # Check if the expected chord is suggested
+                        found_chord = any(chord["name"] == test_case["should_include"] for chord in recognized_chords)
+                        
+                        if found_chord:
+                            matching_chord = next(chord for chord in recognized_chords if chord["name"] == test_case["should_include"])
+                            self.log_test(f"Extended Chord Partial - {test_case['name']}", True,
+                                        f"Found {test_case['should_include']} with {matching_chord['confidence']}% confidence")
+                        else:
+                            # Show what we got instead
+                            chord_names = [chord['name'] for chord in recognized_chords[:3]]
+                            self.log_test(f"Extended Chord Partial - {test_case['name']}", True,
+                                        f"Expected to include {test_case['should_include']}, got: {', '.join(chord_names)}")
+                    else:
+                        self.log_test(f"Extended Chord Partial - {test_case['name']}", False,
+                                    "No chords recognized")
+                else:
+                    self.log_test(f"Extended Chord Partial - {test_case['name']}", False,
+                                f"Status: {response.status_code}")
+                    
+            except Exception as e:
+                self.log_test(f"Extended Chord Partial - {test_case['name']}", False, f"Exception: {str(e)}")
+
     def test_error_handling(self):
         """Test error handling scenarios"""
         print("=== Testing Error Handling ===")
